@@ -10,4 +10,5 @@ Automatization for e-mail sending
 
 # Executable file
 Download ready to use exetucable file from the link below
+
 https://github.com/Nequss/Prostaff/releases/tag/1.0
