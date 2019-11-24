@@ -1,10 +1,8 @@
 # Prostaff
 Automatization for e-mail sending
 
-<center>
   <img src="https://i.imgur.com/VBRWUgY.png"/>
   <img src="https://i.imgur.com/h5gnjEs.png/>
-</center>
           
 # Describtion:
 - Program automatically sends e-mails to imported from excel file recipents.
