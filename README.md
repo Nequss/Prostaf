@@ -2,7 +2,7 @@
 Automatization for e-mail sending
 
   <img src="https://i.imgur.com/VBRWUgY.png"/>
-  <img src="https://i.imgur.com/h5gnjEs.png/>
+  <img src="https://i.imgur.com/h5gnjEs.png"/>
           
 # Describtion:
 - Program automatically sends e-mails to imported from excel file recipents.
