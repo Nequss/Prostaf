@@ -76,10 +76,15 @@
             </Button>
         </StackPanel>
 
-        <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="0">
-            <TextBlock Text="Logs" Margin="10,10,10,5" TextAlignment="Center"/>
-            <ListBox Name="Logs" Margin="10,5,10,5" Height="212"/>
-        </StackPanel>
+        <Grid Grid.Column="3" Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="30"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            
+            <TextBlock Text="Logs" Margin="10,10,10,5" TextAlignment="Center" Grid.Row="0"/>
+            <ListBox Name="Logs" Margin="10,5,10,10" Grid.Row="1"/>
+        </Grid>
 
         <StackPanel Orientation="Vertical" Grid.Column="2" Grid.Row="1">
             <TextBlock Text="Credentials" Margin="5" TextAlignment="Center"/>
