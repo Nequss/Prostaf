@@ -6,6 +6,8 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Diagnostics;
 
 namespace Prostaff
 {
@@ -26,50 +28,86 @@ namespace Prostaff
             InitializeComponent();
         }
 
-        private void Send_Click(object sender, RoutedEventArgs e)
+        private void SendEmails()
         {
             for (int i = 0; i < EmailList.Items.Count; i++)
             {
+                Debug.WriteLine("ok");
                 if (EmailList.Items[i] != null)
                 {
-                    MailAddress from = new MailAddress(adress.Text);
+                    string _adress = string.Empty;
+                    Dispatcher.Invoke(new Action(() => { _adress = adress.Text; }));
+                    MailAddress from = new MailAddress(_adress);
 
-                    string email = Regex.Replace(EmailList.Items[i].ToString(), @"\s+", string.Empty);
-
+                    string email = string.Empty; 
+                    Dispatcher.Invoke(new Action(() => { email = Regex.Replace(EmailList.Items[i].ToString(), @"\s+", string.Empty); }));
                     MailAddress to = new MailAddress(email);
+
                     MailMessage message = new MailMessage(from, to);
 
-                    message.Subject = subject.Text;
+                    string _subject = string.Empty;
+                    Dispatcher.Invoke(new Action(() => { _subject = subject.Text; }));
+                    message.Subject = _subject;
+
                     message.IsBodyHtml = true;
-                    message.Body = TextMessage.Text;
 
-                    if (Attachment1_path != null)
-                        message.Attachments.Add(new Attachment(Attachment1_path));
-                    if (Attachment2_path != null)
-                        message.Attachments.Add(new Attachment(Attachment2_path));
+                    string _textmessage = string.Empty;
+                    Dispatcher.Invoke(new Action(() => { _textmessage = TextMessage.Text; }));
+                    message.Body = _textmessage;
 
+                    Dispatcher.Invoke(new Action(() => {
+                        if (Attachment1_path != null)
+                        {
+                            message.Attachments.Add(new Attachment(Attachment1_path));
+                        }
+                        if (Attachment2_path != null)
+                        {
+                            message.Attachments.Add(new Attachment(Attachment2_path));
+                        }
+                    }));
 
-                    SmtpClient client = new SmtpClient(server.Text);
-                    client.Port = Int32.Parse(port.Text);
+                    string _server = string.Empty;
+                    Dispatcher.Invoke(new Action(() => { _server = server.Text; }));
+                    SmtpClient client = new SmtpClient(_server);
+
+                    string _port = string.Empty;
+                    Dispatcher.Invoke(new Action(() => { _port = port.Text; }));
+                    client.Port = Int32.Parse(_port);
+
+                    string _password = string.Empty;
+                    Dispatcher.Invoke(new Action(() => { _password = password.Text; }));
+
                     client.EnableSsl = true;
-
-                    client.Credentials = new NetworkCredential(from.Address, password.Text);
+                    client.Credentials = new NetworkCredential(from.Address, _password);
 
                     try
                     {
                         client.Send(message);
-                        Logs.Items.Add("Mail to " + email + " has been successfully sent");
-                        EmailList.Items.Remove(EmailList.Items[i]);
-                        EmailList.Items.Refresh();
+                        Dispatcher.Invoke(new Action(() =>
+                        {
+                            Logs.Items.Add("Mail to " + email + " has been successfully sent");
+                            EmailList.Items.Remove(EmailList.Items[i]);
+                            EmailList.Items.Refresh();
+                        }));
                     }
                     catch (Exception ex)
                     {
-                        Logs.Items.Add("Couldn't send mail to " + email);
-                        EmailList.Items.Remove(EmailList.Items[i]);
-                        EmailList.Items.Refresh();
+                        Dispatcher.Invoke(new Action(() =>
+                        {
+                            Logs.Items.Add("Couldn't send mail to " + email);
+                            Logs.Items.Add(ex.ToString());
+                            EmailList.Items.Remove(EmailList.Items[i]);
+                            EmailList.Items.Refresh();
+                        }));
                     }
                 }
             }
+        }
+
+        private void Send_Click(object sender, RoutedEventArgs e)
+        {
+            Thread threadMails = new Thread(SendEmails);
+            threadMails.Start();
         }
 
         private void Remove_Click(object sender, RoutedEventArgs e)
@@ -148,7 +186,7 @@ namespace Prostaff
             if (result == true)
             {
                 Attachment1_path = dlg.FileName;
-                path1Text.Name = "Added";
+                path1Text.Text = "Added";
                 Logs.Items.Add("Added " + dlg.SafeFileName);
 
             }
@@ -167,7 +205,7 @@ namespace Prostaff
             if (result == true)
             {
                 Attachment2_path = dlg.FileName;
-                path2Text.Name = "Added";
+                path2Text.Text = "Added";
                 Logs.Items.Add("Added " + dlg.SafeFileName);
 
             }
