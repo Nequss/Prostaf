@@ -32,56 +32,57 @@ namespace Prostaff
         {
             for (int i = 0; i < EmailList.Items.Count; i++)
             {
-                Debug.WriteLine("ok");
                 if (EmailList.Items[i] != null)
                 {
-                    string _adress = string.Empty;
-                    Dispatcher.Invoke(new Action(() => { _adress = adress.Text; }));
-                    MailAddress from = new MailAddress(_adress);
-
-                    string email = string.Empty; 
-                    Dispatcher.Invoke(new Action(() => { email = Regex.Replace(EmailList.Items[i].ToString(), @"\s+", string.Empty); }));
-                    MailAddress to = new MailAddress(email);
-
-                    MailMessage message = new MailMessage(from, to);
-
-                    string _subject = string.Empty;
-                    Dispatcher.Invoke(new Action(() => { _subject = subject.Text; }));
-                    message.Subject = _subject;
-
-                    message.IsBodyHtml = true;
-
-                    string _textmessage = string.Empty;
-                    Dispatcher.Invoke(new Action(() => { _textmessage = TextMessage.Text; }));
-                    message.Body = _textmessage;
-
-                    Dispatcher.Invoke(new Action(() => {
-                        if (Attachment1_path != null)
-                        {
-                            message.Attachments.Add(new Attachment(Attachment1_path));
-                        }
-                        if (Attachment2_path != null)
-                        {
-                            message.Attachments.Add(new Attachment(Attachment2_path));
-                        }
-                    }));
-
-                    string _server = string.Empty;
-                    Dispatcher.Invoke(new Action(() => { _server = server.Text; }));
-                    SmtpClient client = new SmtpClient(_server);
-
-                    string _port = string.Empty;
-                    Dispatcher.Invoke(new Action(() => { _port = port.Text; }));
-                    client.Port = Int32.Parse(_port);
-
-                    string _password = string.Empty;
-                    Dispatcher.Invoke(new Action(() => { _password = password.Text; }));
-
-                    client.EnableSsl = true;
-                    client.Credentials = new NetworkCredential(from.Address, _password);
-
                     try
                     {
+                        string _adress = string.Empty;
+                        Dispatcher.Invoke(new Action(() => { _adress = adress.Text; }));
+                        MailAddress from = new MailAddress(_adress);
+
+                        string email = string.Empty;
+                        Dispatcher.Invoke(new Action(() => { email = Regex.Replace(EmailList.Items[i].ToString(), @"\s+", string.Empty); }));
+                        MailAddress to = new MailAddress(email);
+
+                        MailMessage message = new MailMessage(from, to);
+
+                        string _subject = string.Empty;
+                        Dispatcher.Invoke(new Action(() => { _subject = subject.Text; }));
+                        message.Subject = _subject;
+
+                        message.IsBodyHtml = true;
+
+                        string _textmessage = string.Empty;
+                        Dispatcher.Invoke(new Action(() => { _textmessage = TextMessage.Text; }));
+                        message.Body = _textmessage;
+
+                        Dispatcher.Invoke(new Action(() =>
+                        {
+                            if (Attachment1_path != null)
+                            {
+                                message.Attachments.Add(new Attachment(Attachment1_path));
+                            }
+                            if (Attachment2_path != null)
+                            {
+                                message.Attachments.Add(new Attachment(Attachment2_path));
+                            }
+                        }));
+
+                        string _server = string.Empty;
+                        Dispatcher.Invoke(new Action(() => { _server = server.Text; }));
+                        SmtpClient client = new SmtpClient(_server);
+
+                        string _port = string.Empty;
+                        Dispatcher.Invoke(new Action(() => { _port = port.Text; }));
+                        client.Port = Int32.Parse(_port);
+
+                        string _password = string.Empty;
+                        Dispatcher.Invoke(new Action(() => { _password = password.Text; }));
+
+                        client.EnableSsl = true;
+                        client.Credentials = new NetworkCredential(from.Address, _password);
+
+
                         client.Send(message);
                         Dispatcher.Invoke(new Action(() =>
                         {
@@ -94,8 +95,9 @@ namespace Prostaff
                     {
                         Dispatcher.Invoke(new Action(() =>
                         {
-                            Logs.Items.Add("Couldn't send mail to " + email);
+                            Logs.Items.Add("Couldn't send mail to " + EmailList.Items[i].ToString());
                             Logs.Items.Add(ex.ToString());
+                            FailedList.Items.Add(EmailList.Items[i]);
                             EmailList.Items.Remove(EmailList.Items[i]);
                             EmailList.Items.Refresh();
                         }));
@@ -220,6 +222,24 @@ namespace Prostaff
 
             Attachment1_path = null;
             path1Text.Name = "Add";
+        }
+
+        private void left_Click(object sender, RoutedEventArgs e)
+        {
+            if (FailedList.SelectedItem != null)
+            {
+                EmailList.Items.Add(FailedList.SelectedItem);
+                FailedList.Items.Remove(FailedList.SelectedItem);
+            }
+        }
+
+        private void right_Click(object sender, RoutedEventArgs e)
+        {
+            if (EmailList.SelectedItem != null)
+            {
+                FailedList.Items.Add(EmailList.SelectedItem);
+                EmailList.Items.Remove(EmailList.SelectedItem);
+            }
         }
     }
 }
