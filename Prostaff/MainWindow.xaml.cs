@@ -12,6 +12,8 @@ namespace Prostaff
     public partial class MainWindow : Window
     {
         public string path = String.Empty;
+        public string Attachment1_path = null;
+        public string Attachment2_path = null;
 
         private static Excel.Workbook MyBook = null;
         private static Excel.Application MyApp = null;
@@ -40,7 +42,13 @@ namespace Prostaff
                     message.Subject = subject.Text;
                     message.IsBodyHtml = true;
                     message.Body = TextMessage.Text;
-                    
+
+                    if (Attachment1_path != null)
+                        message.Attachments.Add(new Attachment(Attachment1_path));
+                    if (Attachment2_path != null)
+                        message.Attachments.Add(new Attachment(Attachment2_path));
+
+
                     SmtpClient client = new SmtpClient(server.Text);
                     client.Port = Int32.Parse(port.Text);
                     client.EnableSsl = true;
@@ -102,9 +110,9 @@ namespace Prostaff
                     {
                         string item = (MySheet.Cells[i, 1].value).ToString();
 
-                        if (item.Contains(","))
+                        if (item.Contains(";"))
                         {
-                            list = item.Split(',').ToList();
+                            list = item.Split(';').ToList();
 
                             for (int j = 0; j < list.Count; j++)
                             {
@@ -127,6 +135,53 @@ namespace Prostaff
             else
                 Logs.Items.Add("Failed");
 
+        }
+
+        private void Attachment1_Click(object sender, RoutedEventArgs e)
+        {
+            Logs.Items.Add("Adding attachment...");
+
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            Nullable<bool> result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                Attachment1_path = dlg.FileName;
+                path1Text.Name = "Added";
+                Logs.Items.Add("Added " + dlg.SafeFileName);
+
+            }
+            else
+                Logs.Items.Add("Failed...");
+        }
+
+        private void Attachment2_Click(object sender, RoutedEventArgs e)
+        {
+            Logs.Items.Add("Adding attachment...");
+
+            Microsoft.Win32.OpenFileDialog dlg = new Microsoft.Win32.OpenFileDialog();
+
+            Nullable<bool> result = dlg.ShowDialog();
+
+            if (result == true)
+            {
+                Attachment2_path = dlg.FileName;
+                path2Text.Name = "Added";
+                Logs.Items.Add("Added " + dlg.SafeFileName);
+
+            }
+            else
+                Logs.Items.Add("Failed...");
+        }
+
+        private void ClearButton_Click(object sender, RoutedEventArgs e)
+        {
+            Attachment2_path = null;
+            path2Text.Name = "Add";
+
+            Attachment1_path = null;
+            path1Text.Name = "Add";
         }
     }
 }

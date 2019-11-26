@@ -33,6 +33,21 @@
             <Button Name="Remove" Margin="10,0,10,10" Click="Remove_Click">
                 <TextBlock TextAlignment="Center">Remove</TextBlock>
             </Button>
+            
+            <TextBlock Text="Attachments" Margin="5" TextAlignment="Center"/>
+
+            <Button Name="Attachment1" Margin="10,0,10,10" Click="Attachment1_Click">
+                <TextBlock Name="path1Text" Text="Add" TextAlignment="Center"/>
+            </Button>
+
+            <Button Name="Attachment2" Margin="10,0,10,10" Click="Attachment2_Click">
+                <TextBlock Name="path2Text" Text="Add" TextAlignment="Center"/>
+            </Button>
+
+            <Button Name="ClearButton" Margin="10,0,10,10" Click="ClearButton_Click">
+                <TextBlock Name="Clear" Text="Clear" TextAlignment="Center"/>
+            </Button>
+
         </StackPanel>
 
         <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="1">
