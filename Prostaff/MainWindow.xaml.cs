@@ -30,8 +30,21 @@ namespace Prostaff
 
         private void SendEmails()
         {
+            int waitTime = 10000;
+
             for (int i = 0; i < EmailList.Items.Count; i++)
             {
+                try
+                {
+                    Dispatcher.Invoke(new Action(() => { waitTime = Int32.Parse(delay.Text); }));
+                }
+                catch(Exception ex)
+                {
+                    waitTime = 10000;
+                }
+
+                Thread.Sleep(waitTime);
+
                 if (EmailList.Items[i] != null)
                 {
                     try

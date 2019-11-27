@@ -92,6 +92,7 @@
             <TextBox Name="adress" Text="E-Mail Adress" TextAlignment="Center" Margin="5"/>
             <TextBox Name="port" Text="Port" TextAlignment="Center" Margin="5"/>
             <TextBox Name="password" Text="Password" TextAlignment="Center" Margin="5"/>
+            <TextBox Name="delay" Text="Delay" TextAlignment="Center" Margin="5"/>
             <TextBox Name="subject" Text="Subject of mail" TextAlignment="Center" Margin="5"/>
         </StackPanel>
 
