@@ -21,6 +21,8 @@ namespace Prostaff
         private static Excel.Application MyApp = null;
         private static Excel.Worksheet MySheet = null;
 
+        public bool flag = false;
+
         List<string> list = new List<string>();
 
         public MainWindow()
@@ -30,17 +32,21 @@ namespace Prostaff
 
         private void SendEmails()
         {
-            int waitTime = 10000;
+            int waitTime = 30000;
 
             for (int i = 0; i < EmailList.Items.Count; i++)
             {
+                Dispatcher.Invoke(new Action(() => { 
+                    Logs.Items.Add("Sending to: " + EmailList.Items[i].ToString());
+                }));
+
                 try
                 {
                     Dispatcher.Invoke(new Action(() => { waitTime = Int32.Parse(delay.Text); }));
                 }
                 catch(Exception ex)
                 {
-                    waitTime = 10000;
+                    waitTime = 30000;
                 }
 
                 Thread.Sleep(waitTime);

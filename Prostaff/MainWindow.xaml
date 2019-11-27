@@ -72,7 +72,7 @@
 
         <StackPanel Orientation="Vertical" Grid.Column="0" Grid.Row="1">
             <Button Name="Send" Margin="5" Click="Send_Click">
-                <TextBlock TextAlignment="Center">Send</TextBlock>
+                <TextBlock Name="startText" Text="Start" TextAlignment="Center"/>
             </Button>
         </StackPanel>
 
