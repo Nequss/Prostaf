@@ -21,6 +21,10 @@ namespace Prostaff
         private static Excel.Application MyApp = null;
         private static Excel.Worksheet MySheet = null;
 
+        public int added = 0;
+        public int sent = 0;
+        public int failed = 0;
+
         public bool flag = false;
 
         List<string> list = new List<string>();
@@ -34,10 +38,10 @@ namespace Prostaff
         {
             int waitTime = 30000;
 
-            for (int i = 0; i < EmailList.Items.Count; i++)
+            for (int i = EmailList.Items.Count; i > 0; i--)
             {
                 Dispatcher.Invoke(new Action(() => { 
-                    Logs.Items.Add("Sending to: " + EmailList.Items[i].ToString());
+                    Logs.Items.Add("Sending to: " + EmailList.Items[EmailList.Items.Count - 1].ToString());
                 }));
 
                 try
@@ -46,12 +50,12 @@ namespace Prostaff
                 }
                 catch(Exception ex)
                 {
-                    waitTime = 30000;
+                    waitTime = 65000;
                 }
 
                 Thread.Sleep(waitTime);
 
-                if (EmailList.Items[i] != null)
+                if (EmailList.Items[EmailList.Items.Count - 1] != null)
                 {
                     try
                     {
@@ -60,7 +64,7 @@ namespace Prostaff
                         MailAddress from = new MailAddress(_adress);
 
                         string email = string.Empty;
-                        Dispatcher.Invoke(new Action(() => { email = Regex.Replace(EmailList.Items[i].ToString(), @"\s+", string.Empty); }));
+                        Dispatcher.Invoke(new Action(() => { email = Regex.Replace(EmailList.Items[EmailList.Items.Count - 1].ToString(), @"\s+", string.Empty); }));
                         MailAddress to = new MailAddress(email);
 
                         MailMessage message = new MailMessage(from, to);
@@ -106,7 +110,10 @@ namespace Prostaff
                         Dispatcher.Invoke(new Action(() =>
                         {
                             Logs.Items.Add("Mail to " + email + " has been successfully sent");
-                            EmailList.Items.Remove(EmailList.Items[i]);
+                            sent++;
+                            added--;
+                            stats.Text = "E-mails: " + added + " Sent: " + sent + " Failed: " + failed;
+                            EmailList.Items.Remove(EmailList.Items[EmailList.Items.Count - 1]);
                             EmailList.Items.Refresh();
                         }));
                     }
@@ -114,10 +121,13 @@ namespace Prostaff
                     {
                         Dispatcher.Invoke(new Action(() =>
                         {
-                            Logs.Items.Add("Couldn't send mail to " + EmailList.Items[i].ToString());
+                            Logs.Items.Add("Couldn't send mail to " + EmailList.Items[EmailList.Items.Count - 1].ToString());
+                            failed++;
+                            added--;
+                            stats.Text = "E-mails: " + added + " Sent: " + sent + " Failed: " + failed;
                             Logs.Items.Add(ex.ToString());
-                            FailedList.Items.Add(EmailList.Items[i]);
-                            EmailList.Items.Remove(EmailList.Items[i]);
+                            FailedList.Items.Add(EmailList.Items[EmailList.Items.Count - 1]);
+                            EmailList.Items.Remove(EmailList.Items[EmailList.Items.Count - 1]);
                             EmailList.Items.Refresh();
                         }));
                     }
@@ -161,7 +171,7 @@ namespace Prostaff
                 MySheet = MyBook.Sheets[1];
                 int lastRow = MySheet.Cells.SpecialCells(Excel.XlCellType.xlCellTypeLastCell).Row;
 
-                int added = 0;
+                added = 0;
 
                 for (int i = 1; i <= lastRow; i++)
                 {
@@ -190,6 +200,7 @@ namespace Prostaff
                 }
 
                 Logs.Items.Add("Imported " + added + " E-mails");
+                stats.Text = "E-mails: " + added + " Sent: " + sent + " Failed: " + failed;
             }
             else
                 Logs.Items.Add("Failed");

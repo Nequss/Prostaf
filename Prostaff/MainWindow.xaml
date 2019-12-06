@@ -94,6 +94,7 @@
             <TextBox Name="password" Text="Password" TextAlignment="Center" Margin="5"/>
             <TextBox Name="delay" Text="Delay" TextAlignment="Center" Margin="5"/>
             <TextBox Name="subject" Text="Subject of mail" TextAlignment="Center" Margin="5"/>
+            <TextBlock Name="stats"  Text="" Margin="5" TextAlignment="Center"/>
         </StackPanel>
 
     </Grid>
