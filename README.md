@@ -1,4 +1,4 @@
-# Prostaff
+# Prostaf E-mails - http://blueiris.pl/
 Automatization for e-mail sending
 
   <img src="https://i.imgur.com/VBRWUgY.png"/>
